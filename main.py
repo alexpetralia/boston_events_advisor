@@ -6,12 +6,38 @@ import pandas as pd
 import sklearn 
 import ast
 import re 
+import sqlite3
 from bs4 import BeautifulSoup
 from datetime import datetime as dt
+from deco import *
+
+@concurrent
+def scrape(i, link):
+    print('starting link {}...'.format(i))
+    response = requests.get(ROOT_URL + link, timeout=5)
+    soup = BeautifulSoup(response.text, 'lxml')
+    description = soup.find(id='event_description').get_text().replace('\n', '').replace('\t', '').replace('\r', '')
+    title = soup.find_all('h1')[0].get_text()
+    cost_container = [x for x in soup.find_all('p') if 'Admission:' in x.get_text()]
+    cost = cost_container[0].find_all('span')[0].get_text().replace('\n','').replace('\t','')
+    return title, cost, description
+    
+@synchronized
+def populate_df():
+    df = pd.DataFrame()
+    for i, link in enumerate(links):
+        title, cost, description = scrape(i, link)
+        df = df.append( 
+            {'title': title, 
+            'description': description, 
+            'link': ROOT_URL + link,
+            'cost': cost}, 
+        ignore_index=True)
+    return df
 
 if __name__ == '__main__':
     
-    ROOT_URL = 'http://www.thebostoncalendar.com/events'
+    ROOT_URL = 'http://www.thebostoncalendar.com'
     TAGS = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University']
     
     today = dt.now().date()
@@ -25,7 +51,7 @@ if __name__ == '__main__':
     
     d = {'year': today.year, 'month': today.month, 'day': today.day, 'tags[]': TAGS}
     
-    response = requests.get(ROOT_URL, params=d,timeout=1)
+    response = requests.get(ROOT_URL + '/events', params=d, timeout=5)
     soup = BeautifulSoup(response.text, 'lxml')
     
     map_js = soup.find_all('script', {'charset': 'utf-8'})[0].get_text()
@@ -36,9 +62,11 @@ if __name__ == '__main__':
     
     links = []
     for event in x:
-        print(event)
         for k, v in event.items():
             if k == 'description':
                 link = re.search('<a href=\'(.*)\'>', v)
-                print(link)
                 links += [link.group(1)]
+        
+    x = populate_df()
+        
+    df = df[['title', 'cost', 'link', 'description']]
