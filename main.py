@@ -2,71 +2,84 @@
 # -*- coding: utf-8 -*-
 
 import requests
-import pandas as pd
 import sklearn 
 import ast
 import re 
 import sqlite3
+import sqlalchemy
+import pandas as pd
+import time
 from bs4 import BeautifulSoup
-from datetime import datetime as dt
-from deco import *
+from datetime import datetime as dt, timedelta as td
+from deco import concurrent, synchronized
 
+@synchronized
+def populate_df(links):
+    x = [None] * 1000
+    for i, link in enumerate(links):
+        x[i] = scrape(link)
+    return [y for y in x if y is not None]
+    
 @concurrent
-def scrape(i, link):
-    print('starting link {}...'.format(i))
+def scrape(link):
     response = requests.get(ROOT_URL + link, timeout=5)
     soup = BeautifulSoup(response.text, 'lxml')
-    description = soup.find(id='event_description').get_text().replace('\n', '').replace('\t', '').replace('\r', '')
-    title = soup.find_all('h1')[0].get_text()
-    cost_container = [x for x in soup.find_all('p') if 'Admission:' in x.get_text()]
-    cost = cost_container[0].find_all('span')[0].get_text().replace('\n','').replace('\t','')
-    return title, cost, description
+
+    title = soup.find_all('h1')[0].get_text().strip()
+    cost = [x for x in soup.find_all('p') if 'Admission:' in x.get_text()][0].find_all('span')[0].get_text().replace('\n','').replace('\t','').strip()
+    description = soup.find(id='event_description').get_text().replace('\n', '').replace('\t', '').replace('\r', '').strip()    
     
-@synchronized
-def populate_df():
-    df = pd.DataFrame()
-    for i, link in enumerate(links):
-        title, cost, description = scrape(i, link)
-        df = df.append( 
-            {'title': title, 
-            'description': description, 
-            'link': ROOT_URL + link,
-            'cost': cost}, 
-        ignore_index=True)
-    return df
+    return { 'title': title, 
+             'cost': cost, 
+             'description': description }
 
 if __name__ == '__main__':
     
     ROOT_URL = 'http://www.thebostoncalendar.com'
-    TAGS = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University']
+    TAGS = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University']    
     
-    today = dt.now().date()
     
-    tag_string = ''
-    for tag in TAGS:
-        tag = tag.replace(' ', '+').replace('&','%26')
-        tag_string += '&tags%5B%5D={}'.format(tag)
+    for i in range(1,2):
+        date = dt.now().date() + td(1)
+        payload = {'year': date.year, 'month': date.month, 'day': date.day, 'tags[]': TAGS}
+        response = requests.get(ROOT_URL + '/events', params=payload, timeout=5)
         
-    URL = ROOT_URL + 'year={}&month={}&day={}'.format(today.year, today.month, today.day) + tag_string
-    
-    d = {'year': today.year, 'month': today.month, 'day': today.day, 'tags[]': TAGS}
-    
-    response = requests.get(ROOT_URL + '/events', params=d, timeout=5)
-    soup = BeautifulSoup(response.text, 'lxml')
-    
-    map_js = soup.find_all('script', {'charset': 'utf-8'})[0].get_text()
-    map_js = map_js.replace('\n', ' ')
-
-    result = re.search('Gmaps.map.markers = (.*); Gmaps.map.create_markers', map_js)
-    x = ast.literal_eval( result.group(1) )
-    
-    links = []
-    for event in x:
-        for k, v in event.items():
-            if k == 'description':
-                link = re.search('<a href=\'(.*)\'>', v)
-                links += [link.group(1)]
+        soup = BeautifulSoup(response.text, 'lxml')
+        js_urls = soup.find_all('script', {'charset': 'utf-8'})[0].get_text().replace('\n', ' ')
+        result = re.search('Gmaps.map.markers = (.*); Gmaps.map.create_markers', js_urls)
+        content = ast.literal_eval( result.group(1) )
         
-    x = populate_df()
+        links = []
+        for event in content:
+            for k, v in event.items():
+                if k == 'description':
+                    link = re.search('<a href=\'(.*)\'>', v)
+                    links += [link.group(1)]
+            
+        results = populate_df(links)
         
-    df = df[['title', 'cost', 'link', 'description']]
+        cnxn = sqlite3.connect('events.db')
+        c = cnxn.cursor()
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS events (
+            title TEXT NOT NULL,
+            cost TEXT NOT NULL,
+            description TEXT NOT NULL
+            );
+        """)
+        
+        for result in results:
+            c.execute("""
+                INSERT INTO events (title, cost, description)
+                SELECT ?, ?, ?
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM events
+                    WHERE title = ?
+                )
+            """, (result['title'], result['cost'], result['description'], result['title']))
+            
+        time.sleep(20)
+        
+        # Use classes
+        # Iterate over many links
+        # Apply sklearn to df.values training/test sets
