@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Boston Events</title> 
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet"> 
+</head>
+ 
+<body>
+    <div class="container">
+        <div class="header">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    <li {% if request.path == url_for('get_template_main') %} class="active" {% endif %}><a href="/">Engine</a></li>
+                    <li {% if request.path == url_for('get_template_homework') %} class="active" {% endif %}><a href="/homework" >Do homework</a></li>
+                    <li {% if request.path == url_for('get_template_about') %} class="active" {% endif %}><a href="/about" >About</a></li>
+                    <li><a href="https://github.com/alexpetralia/boston_events_advisor" target="_blank">GitHub</a></li>
+                </ul>
+            </nav>
+            <h3 class="text-muted">Boston Events</h3>
+        </div>
+
+        {% block content %}
+
+        {% endblock %}
+ 
+        <footer class="footer">
+            <p>&copy; Alex Petralia 2016</p>
+        </footer>
+ 
+    </div>
+</body>
+{% block scripts %} {% endblock %}
+</html>
