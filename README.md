@@ -19,29 +19,9 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 
 * add a wrapper for requests when it fails
 * add logging
-* add email notifications
+* add email notifications (once per week) to flask app
 * use CRSF token
-
-
-
-# Scraper runs weekly
-# Receive an email: Your event recommendations this week are ready!
-# Route to Flask app
-
-# Homepage: Hey Alex, you will probably like these []. You may like these [include low probability + random in order to diversify events pool]. (Showing 20 events of 54 this week)
-# Do some homework page: Check off the ones you like and hit submit.
-# Github link
-# About page
-
-# (modal dropdown) Submit PIN to prove you're Alex (hashed)
-# Great, see you next week!
-# Confidence in our predicitons: 80%
-        
-"""
-Steps:
-
-
-* Use ipdb for debugging
-
-
-"""
+* scraper runs weekly
+* include low probability + random in order to diversify events pool eg. showing 20 events of 54 this week
+* (modal dropdown) Submit PIN to prove you're Alex (hashed server-side) -> Great, see you next week!
+* Confidence in our predictions: 80%
