@@ -4,16 +4,16 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 
 # Installation and run instructions
 
-1) git clone <repo>
-2) python3 -m venv .venv
-3) source .venv/bin/activate
-4) python3 manage.py runserver (runs the webpage)
-5) celery -A scraper worker -l info -B (runs the beat task in the background)
+1. git clone <repo>
+2. python3 -m venv .venv
+3. source .venv/bin/activate
+4. python3 manage.py runserver (runs the webpage)
+5. celery -A scraper worker -l info -B (runs the beat task in the background)
 
 # Next Steps
 
-1) pandas/sklearn classification analysis 
-2) Flask app
+1. pandas/sklearn classification analysis 
+2. Flask app
 
 # To do
 
