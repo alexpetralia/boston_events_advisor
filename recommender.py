@@ -6,26 +6,27 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
+from datetime import datetime as dt
 
-cnxn = sqlalchemy.create_engine('sqlite:///events.db')
-df = pd.read_sql('SELECT * FROM events', cnxn)
+def predict():
+	cnxn = sqlalchemy.create_engine('sqlite:///events.db')
+	df = pd.read_sql_table('events', cnxn)
 
-df = pd.read_sql_table('events', cnxn)
-df.loc[120, 'liked'] = 1
-df.loc[149, 'liked'] = 1
+	train = df[df['creation_date'] <= dt.now().date()]
+	test = df[df['creation_date'] > dt.now().date()]
 
-# The cuttoff should be creation_dates before this week as the training set
-train = df.head(150)
-test = df.tail(df.shape[0] - 150)
+	text_clf = Pipeline([('vect',   CountVectorizer()),
+	                     ('tfidf',  TfidfTransformer()),
+	                     ('clf',    SGDClassifier(loss='hinge', penalty='l2',
+	                                              alpha=1e-3, n_iter=5, random_state=42)) 
+	                    ])
+	clf = text_clf.fit(train['description'].values, train['liked'].values)
 
-text_clf = Pipeline([('vect',   CountVectorizer()),
-                     ('tfidf',  TfidfTransformer()),
-                     ('clf',    SGDClassifier(loss='hinge', penalty='l2',
-                                              alpha=1e-3, n_iter=5, random_state=42)) 
-                    ])
-            
-clf = text_clf.fit(train['description'].values, train['liked'].values)
-predicted = clf.predict(test['description'].values)
+	events = zip(test['event_id'], test['title'].values, clf.predict(test['description'].values))
+	# for event_id, title, liked in events:
+	#     print('%s: %r => %s' % (event_id, title, liked))
+	return events
 
-for title, liked in zip(test['title'].values, predicted):
-    print('%r => %s' % (title, liked))
+if __name__ == '__main__':
+
+	predict()

@@ -1,3 +1,43 @@
+{% macro show_events(number, fn_post, show_dates=False) %}
+    <form action="{{ url_for(fn_post) }}" method="post">
+        {% for events_row in events[0:number] | batch(6) %}
+        <div class="row marketing">
+            {% for events_col in events_row | batch(3) %}
+            <div class="col-lg-6">
+                {% for event in events_col %}
+                    <h4>{{ event.title }}</h4>
+                    {% if show_dates %} <p style='font-size: .75em'><i>{{ event.creation_date }}</i></p> {% endif %}
+                    <div style="padding: 0em .5em 0em .5em; {% if event.suggested == 1 %}background-color: rgba(255, 228, 181, .7){% endif %}"><p>{{ event.description[0:150] }}{% if event.description[151] %}...{% endif %}</p></div>
+                    <button class='btn btn-secondary' style='cursor:default'>{{ event.cost }}</button>
+                    <a href="{{ event.link }}" class='btn btn-info' target="_blank">more</a>
+                    <div class='pull-right' data-toggle='buttons'>
+                        <label class='glyphicon glyphicon-thumbs-up btn {% if event.liked == 1 %}btn-primary{% endif %}'>
+                            <input type="radio" name="event_id_{{ event.id }}" checked value={{ event.liked }} />
+                        </label>
+                    </div>
+                    {% if not loop.last %}<div style="padding: 1em"></div> {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-lg btn-success center-block">Submit</button><br />
+    </form>
+{% endmacro %}
+
+{% macro toggle_checkboxes() %}
+<script>
+    $(document).ready(function () {
+        $(":radio").on("click", function () { 
+               var value = $(this).val();
+               $(this).closest('label').toggleClass('btn-primary');
+               $(this).val(value == 1 ? 0 : 1);
+        });
+    });
+</script>
+{% endmacro %}
+
 <!DOCTYPE html>
 <html lang="en"> 
 <head>

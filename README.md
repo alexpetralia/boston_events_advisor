@@ -22,10 +22,11 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 * add email notifications (once per week) to flask app
 * use CRSF token
 * scraper runs weekly
-* include low probability + random in order to diversify events pool eg. showing 20 events of 54 this week
 * (modal dropdown) Submit PIN to prove you're Alex (hashed server-side) -> Great, see you next week!
 * Confidence in our predictions: 80%
 * incorporate distance from Home as a feature (lat, long)
 * include all listed Categories in the feature list
 * use cross-validation as fitting method
-* use a macro for identical-looking pages
+* divide app.py into different modules
+* use a sql decorator for sql queries
+* clean up requirements.txt
