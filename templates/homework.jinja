@@ -2,4 +2,44 @@
 
 {% block content %}
 
+    <form action="{{ url_for('post_updates') }}" method="post">
+        {% for events_row in events | batch(6) %}
+        <div class="row marketing">
+            {% for events_col in events_row | batch(3) %}
+            <div class="col-lg-6">
+                {% for event in events_col %}
+                    <h4>{{ event.title}}</h4>
+                    <div style="padding: .5em"><p>{{ event.description[0:150] }}{% if event.description[151] %}...{% endif %}</p></div>
+                    <button class='btn btn-secondary' style='cursor:default'>{{ event.cost }}</button>
+                    <a href="{{ event.link }}" class='btn btn-info' target="_blank">more</a>
+                    <div class='pull-right' data-toggle='buttons'>
+                        <label class='glyphicon glyphicon-thumbs-up btn {% if event.liked == 1 %}btn-primary{% endif %}'>
+                            <input type="radio" name="event_id_{{ event.id }}" checked value={{ event.liked }} />
+                        </label>
+                    </div>
+                    <div style="padding: 1em"></div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-lg btn-success center-block">Submit</button>
+        <br />
+    </form>
+
 {% endblock %}
+{% block scripts %}
+<script>
+$(document).ready(function () {
+    $(":radio").on("click", function () { 
+           var value = $(this).val();
+           $(this).closest('label').toggleClass('btn-primary');
+           $(this).val(value == 1 ? 0 : 1);
+    });
+});
+</script>
+{% endblock %}
+
+<!-- THIS SHOULD GO TO A DIFFERENT POST METHOD. CHANGE ALL HISTORICAL TITLES, NOT JUST THE EVENT ID -->

@@ -1,6 +1,6 @@
-# Boston Events Advisor
+# Boston events advisor
 
-Every Sunday, I look for upcoming events in Boston I'd like to attend using [www.thebostoncalendar.com](www.thebostoncalendar.com). This is not only a time-consuming task, but also a tedious one: I have to wade through dozens of events which do not interest me to find the few that do. The objective of this project is to automate finding the signal from the noise.
+Every Sunday, I look for upcoming events in Boston I'd like to attend using [www.thebostoncalendar.com](www.thebostoncalendar.com). This is not only a time-consuming task, but also a tedious one: I have to wade through dozens of events which do not interest me to find the few that do. The objective of this project is to automate getting the signal from the noise.
 
 # Installation and run instructions
 
@@ -10,10 +10,10 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 4. python3 manage.py runserver (runs the webpage)
 5. celery -A scraper worker -l info -B (runs the beat task in the background)
 
-# Next Steps
+# Next steps
 
-1. pandas/sklearn classification analysis 
-2. Flask app
+1. Flask app
+2. pandas/sklearn classification analysis 
 
 # To do
 
@@ -25,3 +25,7 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 * include low probability + random in order to diversify events pool eg. showing 20 events of 54 this week
 * (modal dropdown) Submit PIN to prove you're Alex (hashed server-side) -> Great, see you next week!
 * Confidence in our predictions: 80%
+* incorporate distance from Home as a feature (lat, long)
+* include all listed Categories in the feature list
+* use cross-validation as fitting method
+* use a macro for identical-looking pages
