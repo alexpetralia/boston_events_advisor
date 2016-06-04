@@ -21,6 +21,23 @@ import sqlite3
 from docopt import docopt
 from bs4 import BeautifulSoup
 from datetime import datetime as dt, timedelta as td
+# from celeryd import celery
+# from celery.contrib.methods import task_method
+# from celery import group
+from email.mime.text import MIMEText
+import smtplib
+
+def email(subject, body):
+    sender_email = 'test_email@sample.com'
+    recipient_email = ''
+
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    sender = smtplib.SMTP('gmail.com')
+    sender.sendmail(sender_email, recipient_email, msg.as_string())
+    sender.quit()
              
 class ScraperConfig(object):
     
@@ -43,10 +60,6 @@ class EventsScraper(ScraperConfig):
         for i in range(self.daysOut):
             resultsScraper = ResultsPageScraper(self.today + td(i), tags)
             self.events[str(self.today)] = resultsScraper.scrapeLinks()
-            
-    def returnTodaysEvents(self):
-        
-        return self.events[str(self.today)]
             
 class ResultsPageScraper(ScraperConfig):
     
@@ -119,8 +132,13 @@ class ResultsPageScraper(ScraperConfig):
         self.getLinks()
         
         for i, link in enumerate(self.links):
+            print(i)
             detailScraper = DetailPageScraper(link)
             self.data.append( detailScraper.getData() )
+
+        # jobs = group(DetailPageScraper(link).getData() for link in self.links)
+        # self.data = jobs.apply_async()
+        # print(self.data)
             
         self.writeToSql()
         
@@ -132,6 +150,9 @@ class DetailPageScraper(ScraperConfig):
         
         super(DetailPageScraper, self).__init__()
         self.link = self.rootURL + link
+
+    def getSoup(self):
+
         response = requests.get(self.link, timeout=self.timeOut)
         self.soup = BeautifulSoup(response.text, 'lxml')
     
@@ -153,8 +174,10 @@ class DetailPageScraper(ScraperConfig):
         description = descDiv.replace('\n', '').replace('\t', '').replace('\r', '').strip()   
         self.description = description
     
+    # @celery.task(filter=task_method)
     def getData(self):
         
+        self.getSoup()
         self.getTitle()
         self.getCost()
         self.getDescription()
@@ -165,10 +188,13 @@ class DetailPageScraper(ScraperConfig):
                  'link': self.link
                 }
 
+@celery.task
+def main():
+    # args = docopt(__doc__)
+    tags = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University']
+    scraper = EventsScraper(daysOut = 7)# int(args['--days']))
+    scraper.scrapeEvents(tags)
+
 if __name__ == '__main__':
     
-    args = docopt(__doc__)
-    tags = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University']
-    scraper = EventsScraper(daysOut = int(args['--days']))
-    scraper.scrapeEvents(tags)
-    json = scraper.returnTodaysEvents()
+    main()

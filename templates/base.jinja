@@ -1,18 +1,18 @@
 {% macro show_events(number, fn_post, show_dates=False) %}
     <form action="{{ url_for(fn_post) }}" method="post">
-        {% for events_row in events[0:number] | batch(6) %}
+        {% for events_row in events[0:number] | batch(12) %}
         <div class="row marketing">
-            {% for events_col in events_row | batch(3) %}
-            <div class="col-lg-6">
+            {% for events_col in events_row | batch(4) %}
+            <div class="col-lg-4">
                 {% for event in events_col %}
                     <h4>{{ event.title }}</h4>
                     {% if show_dates %} <p style='font-size: .75em'><i>{{ event.creation_date }}</i></p> {% endif %}
                     <div style="padding: 0em .5em 0em .5em; {% if event.suggested == 1 %}background-color: rgba(255, 228, 181, .7){% endif %}"><p>{{ event.description[0:150] }}{% if event.description[151] %}...{% endif %}</p></div>
                     <button class='btn btn-secondary' style='cursor:default'>{{ event.cost }}</button>
                     <a href="{{ event.link }}" class='btn btn-info' target="_blank">more</a>
-                    <div class='pull-right' data-toggle='buttons'>
+                    <div class='pull-right'>
                         <label class='glyphicon glyphicon-thumbs-up btn {% if event.liked == 1 %}btn-primary{% endif %}'>
-                            <input type="radio" name="event_id_{{ event.id }}" checked value={{ event.liked }} />
+                            <input style='display: none;' type="radio" name="event_id_{{ event.id }}" checked value={{ event.liked }} />
                         </label>
                     </div>
                     {% if not loop.last %}<div style="padding: 1em"></div> {% endif %}
@@ -22,7 +22,29 @@
         </div>
         {% endfor %}
 
-        <button type="submit" class="btn-lg btn-success center-block">Submit</button><br />
+        <!-- MODAL -->
+        <div class="modal fade bd-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content text-center">
+                    <div class='modal-header'> 
+                        <h2 class='modal-title'>Are you Alex?</h2>
+                    </div>
+                    <div class='modal-body'>
+                        <form action="{{ url_for('submit_pin') }}" method="post">
+                            <div class ='pincode-input-container'>
+                                <input type="text" id="pincode-input1" name='pin' style="display: none;">
+                            </div>
+                            <br /><br />
+                            <button type="input" class="btn-lg btn-success center-block" data-toggle="modal" data-target=".bd-example-modal-sm">Ok</button><br />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 1em"></div>
+        <div style="padding: 1em"></div>
+        <button type="input" class="btn-lg btn-success center-block" data-toggle="modal" data-target=".bd-modal-sm">Submit</button><br />
     </form>
 {% endmacro %}
 
@@ -35,6 +57,10 @@
                $(this).val(value == 1 ? 0 : 1);
         });
     });
+    $('#pin').pincodeInput({
+        inputs: 4,
+        hideDigits: true,
+    });
 </script>
 {% endmacro %}
 
@@ -44,12 +70,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Boston Events</title> 
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet"> 
+    <link href="http://getbootstrap.com/examples/jumbotron/jumbotron.css" rel="stylesheet"> 
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href=" {{ url_for('static', filename='vendor/css/bootstrap-pincode-input.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"> </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"> </script>
+    <script src="{{ url_for('static', filename='vendor/js/bootstrap-pincode-input.js') }}"> </script>
 </head>
  
 <body>
+
     <div class="container">
+
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
@@ -59,18 +91,25 @@
                     <li><a href="https://github.com/alexpetralia/boston_events_advisor" target="_blank">GitHub</a></li>
                 </ul>
             </nav>
-            <h3 class="text-muted">Boston Events</h3>
+            <h1 class="text-muted">Boston Events</h1>
+            <div style="padding: 1em"></div> 
         </div>
 
         {% block content %}
-
         {% endblock %}
- 
+     
         <footer class="footer">
             <p>&copy; Alex Petralia 2016</p>
         </footer>
  
     </div>
+
 </body>
 {% block scripts %} {% endblock %}
+<script>
+    $(document).ready(function() {
+        $('#pincode-input1').pincodeInput();
+    });
+</script>
 </html>
+

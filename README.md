@@ -7,26 +7,17 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 1. git clone <repo>
 2. python3 -m venv .venv
 3. source .venv/bin/activate
-4. python3 manage.py runserver (runs the webpage)
-5. celery -A scraper worker -l info -B (runs the beat task in the background)
-
-# Next steps
-
-1. Flask app
-2. pandas/sklearn classification analysis 
+4. sudo redis-server (start the redis server)
+4. python3 manage.py runserver (start the webpage)
+5. celery -A celeryd worker -l info -B (start the celery beat scheduled task)
 
 # To do
 
+* celery beat scraper runs weekly + secure SMTP email upon completion linking to app
+* configure nginx
+* migrate to production
+* incorporate distance from Home as a feature (lat, long) + include all listed Categories in the feature list [http://stackoverflow.com/questions/15257674/scikit-learn-add-features-to-a-vectorized-set-of-documents] + confidence in our predictions: 80% + use cross-validation as fitting method
+* use a sql decorator for sql queries
 * add a wrapper for requests when it fails
 * add logging
-* add email notifications (once per week) to flask app
-* use CRSF token
-* scraper runs weekly
-* (modal dropdown) Submit PIN to prove you're Alex (hashed server-side) -> Great, see you next week!
-* Confidence in our predictions: 80%
-* incorporate distance from Home as a feature (lat, long)
-* include all listed Categories in the feature list
-* use cross-validation as fitting method
-* divide app.py into different modules
-* use a sql decorator for sql queries
-* clean up requirements.txt
+* celerize each HTTP connection to run concurrently 

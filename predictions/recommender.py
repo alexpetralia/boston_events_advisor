@@ -23,8 +23,9 @@ def predict():
 	clf = text_clf.fit(train['description'].values, train['liked'].values)
 
 	events = zip(test['event_id'], test['title'].values, clf.predict(test['description'].values))
-	# for event_id, title, liked in events:
-	#     print('%s: %r => %s' % (event_id, title, liked))
+	# for event_id, title, liked in events: # remember, events is a generator - values disappear if this is run
+	# 	if liked == 1:
+	# 		print('%s: %r => %s' % (event_id, title, liked))
 	return events
 
 if __name__ == '__main__':
