@@ -1,0 +1,12 @@
+body {
+  padding: 20px 0px 20px 0px;
+}
+
+.container {
+	width: 70%;
+}
+
+.jumbotron{
+	padding-top:20px;
+	padding-bottom:20px;
+}

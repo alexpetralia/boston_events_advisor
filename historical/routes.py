@@ -1,24 +1,26 @@
-from run import app
+from app import app
 from flask import render_template, redirect, request, url_for
 from datetime import datetime as dt, timedelta as td
+from overhead.functions import sql_execute
 import json
 import os
 import sqlite3
 import random
 
+#########
+# VERBS #
+#########
+
 @app.route("/get_historical_events")
 def get_historical_events():
 	
-	cnxn = sqlite3.connect('events.db')
-	c = cnxn.cursor()
 	today = dt.now().date()
 
-	c.execute("""
+	results = sql_execute("""
 		SELECT * FROM events
 		WHERE creation_date <= ?
 		GROUP BY title;
-	""", [today + td(1000)])
-	results = c.fetchall()
+	""", [today])
 
 	data = []
 	columns = ['id', 'title', 'cost', 'description', 'link', 'liked', 'creation_date', 'modification_date']
@@ -39,23 +41,24 @@ def post_homework():
 				if not event_id.startswith('event_id'):
 					continue
 				event_id = int(event_id.split('_')[-1])
-				cnxn = sqlite3.connect('events.db')
-				c = cnxn.cursor()
-				c.execute("""
-				UPDATE events
-				SET
-					liked = ?,
-					modification_date = DATE('now')
-				WHERE title = (
-					SELECT title FROM events WHERE event_id = ?
-				);
+				sql_execute("""
+					UPDATE events
+					SET
+						liked = ?,
+						modification_date = DATE('now')
+					WHERE title = (
+						SELECT title FROM events WHERE event_id = ?
+					);
 				""", [liked, event_id])
-				cnxn.commit()
 			return redirect(url_for('get_template_homework'))
 		else:
-			return "PIN invalid!"
+			return redirect(url_for('get_template_403'))
 	else: 
 		return redirect(url_for('get_template_homework'))
+
+#############
+# TEMPLATES #
+#############
 
 @app.route("/homework")
 def get_template_homework():

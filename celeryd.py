@@ -11,10 +11,11 @@ celery.conf.update(
 	CELERY_TIMEZONE = 'US/Eastern',
 	CELERY_IMPORTS = ('scraper'),
 	CONCURRENCY = 10,
-	CELERY_BEAT_SCHEDULE = {
+	CELERYBEAT_SCHEDULE_FILENAME = '.celerybeat_sched',
+	CELERYBEAT_SCHEDULE = {
 		'scraper': {
 			'task': 'scraper.main',
-			'schedule': crontab(hour=12, minute=0, day_of_week='sunday')
+			'schedule': crontab(hour=17, minute=41, day_of_week='sunday')
 		}
 	}
 )

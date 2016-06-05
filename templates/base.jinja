@@ -30,7 +30,7 @@
                         <h2 class='modal-title'>Are you Alex?</h2>
                     </div>
                     <div class='modal-body'>
-                        <form action="{{ url_for('submit_pin') }}" method="post">
+                        <form>
                             <div class ='pincode-input-container'>
                                 <input type="text" id="pincode-input1" name='pin' style="display: none;">
                             </div>
@@ -48,34 +48,18 @@
     </form>
 {% endmacro %}
 
-{% macro toggle_checkboxes() %}
-<script>
-    $(document).ready(function () {
-        $(":radio").on("click", function () { 
-               var value = $(this).val();
-               $(this).closest('label').toggleClass('btn-primary');
-               $(this).val(value == 1 ? 0 : 1);
-        });
-    });
-    $('#pin').pincodeInput({
-        inputs: 4,
-        hideDigits: true,
-    });
-</script>
-{% endmacro %}
-
 <!DOCTYPE html>
 <html lang="en"> 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Boston Events</title> 
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://getbootstrap.com/examples/jumbotron/jumbotron.css" rel="stylesheet"> 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link href=" {{ url_for('static', filename='vendor/css/bootstrap-pincode-input.css') }}" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"> </script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"> </script>
+    <link href="{{ url_for('static', filename='vendor/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='local/css/global.css') }}" rel="stylesheet"> 
+    <link href="{{ url_for('static', filename='vendor/css/bootstrap-pincode-input.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='vendor/js/jquery-2.2.4.min.js') }}"> </script>
+    <script src="{{ url_for('static', filename='vendor/js/bootstrap.min.js') }}"> </script>
     <script src="{{ url_for('static', filename='vendor/js/bootstrap-pincode-input.js') }}"> </script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
  
 <body>
@@ -105,11 +89,6 @@
     </div>
 
 </body>
-{% block scripts %} {% endblock %}
-<script>
-    $(document).ready(function() {
-        $('#pincode-input1').pincodeInput();
-    });
-</script>
+    <script src="{{ url_for('static', filename='local/js/global.js') }}"> </script>
 </html>
 

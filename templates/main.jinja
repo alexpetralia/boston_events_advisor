@@ -7,10 +7,6 @@
     <h3>here are some events this week you might like.</h3>
 </div>
 
-{{ show_events(events|length, "post_recommendations", show_dates=True) }}
+{{ show_events(events|length, "post_upcoming", show_dates=True) }}
 
-{% endblock %}
-
-{% block scripts %}
-{{ toggle_checkboxes() }}
 {% endblock %}

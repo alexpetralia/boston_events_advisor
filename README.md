@@ -13,11 +13,7 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 
 # To do
 
-* celery beat scraper runs weekly + secure SMTP email upon completion linking to app
-* configure nginx
+* configure nginx/uWSGI (http://flask.pocoo.org/docs/0.11/deploying/uwsgi/)
 * migrate to production
+
 * incorporate distance from Home as a feature (lat, long) + include all listed Categories in the feature list [http://stackoverflow.com/questions/15257674/scikit-learn-add-features-to-a-vectorized-set-of-documents] + confidence in our predictions: 80% + use cross-validation as fitting method
-* use a sql decorator for sql queries
-* add a wrapper for requests when it fails
-* add logging
-* celerize each HTTP connection to run concurrently 
