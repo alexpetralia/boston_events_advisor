@@ -4,16 +4,24 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 
 # Installation and run instructions
 
-1. git clone <repo>
-2. python3 -m venv .venv
-3. source .venv/bin/activate
-4. sudo redis-server (start the redis server)
-4. python3 manage.py runserver (start the webpage)
-5. celery -A celeryd worker -l info -B (start the celery beat scheduled task)
+1. Clone the repo
+`git clone github.com/alexpetralia/boston_events_advisor`
+2. Create a virtual environment
+`python3 -m venv .venv`
+3. Activate the virtual environment
+`source .venv/bin/activate`
+4. Install the required packages
+`pip install -r requirements.txt`
+5. Start the redis server
+`sudo redis-server`
+6. Start the celerybeat worker
+`celery -A celeryd worker -l info -B`
+7. Start the uWSGI server to run Flask
+`uwsgi --socket 0.0.0.0:8000 --protocol=http --module app --callable app`
+
+# Notes
+* Use `python3 manage.py runserver` to run the Flask development server
 
 # To do
-
-* configure nginx/uWSGI (http://flask.pocoo.org/docs/0.11/deploying/uwsgi/)
-* migrate to production
 
 * incorporate distance from Home as a feature (lat, long) + include all listed Categories in the feature list [http://stackoverflow.com/questions/15257674/scikit-learn-add-features-to-a-vectorized-set-of-documents] + confidence in our predictions: 80% + use cross-validation as fitting method
