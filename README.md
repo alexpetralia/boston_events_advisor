@@ -10,7 +10,7 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 4. Install the required packages: `pip install -r requirements.txt`
 5. Start the redis server: `sudo redis-server`
 6. Start the celerybeat worker: `celery -A celeryd worker -l info -B`
-7. Start the uWSGI server to run Flask: `uwsgi --socket 0.0.0.0:8000 --protocol=http --module app --callable app`
+7. Start the uWSGI server to run Flask: `uwsgi --socket 0.0.0.0:8001 --protocol=http --module app --callable app`
 
 ### Notes
 * Use `python3 manage.py runserver` to run the Flask development server
