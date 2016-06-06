@@ -29,6 +29,5 @@ scikit-learn==0.17.1
 scipy==0.17.1
 simplejson==3.8.2
 six==1.10.0
-sklearn==0.17.1
 uWSGI==2.0.13.1
 uritemplate==0.6
