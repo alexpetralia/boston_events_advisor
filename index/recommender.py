@@ -9,16 +9,16 @@ from sklearn.pipeline import Pipeline
 from datetime import datetime as dt
 
 def predict():
+
 	cnxn = sqlalchemy.create_engine('sqlite:///events.db')
 	df = pd.read_sql_table('events', cnxn)
 
 	train = df[df['creation_date'] <= dt.now().date()]
 	test = df[df['creation_date'] > dt.now().date()]
 
-	text_clf = Pipeline([('vect',   CountVectorizer()),
-	                     ('tfidf',  TfidfTransformer()),
-	                     ('clf',    SGDClassifier(loss='hinge', penalty='l2',
-	                                              alpha=1e-3, n_iter=5, random_state=42)) 
+	text_clf = Pipeline([('vect', CountVectorizer()),
+	                     ('tfidf', TfidfTransformer()),
+	                     ('clf', SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, n_iter=5, random_state=42))
 	                    ])
 	clf = text_clf.fit(train['description'].values, train['liked'].values)
 
@@ -30,4 +30,4 @@ def predict():
 
 if __name__ == '__main__':
 
-	predict()
+   predict()

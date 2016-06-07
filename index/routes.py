@@ -107,7 +107,7 @@ def get_template_about():
 
     return render_template('about.jinja')
 
-@app.route("/404")
+@app.route("/403")
 def get_template_403():
 
     return render_template('403.jinja')
