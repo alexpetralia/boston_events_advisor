@@ -15,7 +15,7 @@ celery.conf.update(
 	CELERYBEAT_SCHEDULE = {
 		'scraper': {
 			'task': 'scraper.main',
-			'schedule': crontab(hour=17, minute=41, day_of_week='sunday')
+			'schedule': crontab(hour=11, minute=00, day_of_week='sunday')
 		}
 	}
 )
