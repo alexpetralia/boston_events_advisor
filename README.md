@@ -1,6 +1,6 @@
 # Boston Events
 
-Every Sunday, I look for upcoming events in Boston I'd like to attend using [www.thebostoncalendar.com](www.thebostoncalendar.com). This is not only a time-consuming task, but also a tedious one: I have to wade through dozens of events which do not interest me to find the few that do. The objective of this project is to automate getting the signal from the noise.
+Every Sunday, I look for upcoming events in Boston I'd like to attend using [www.thebostoncalendar.com](http://www.thebostoncalendar.com). This is not only a time-consuming task, but also a tedious one: I have to wade through dozens of events which do not interest me to find the few that do. The objective of this project is to automate getting the signal from the noise.
 
 **You can now view this project live <a href="http://52.2.13.97:8001/" target="_blank">here</a>.**
 
