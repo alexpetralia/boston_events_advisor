@@ -6,7 +6,23 @@ body {
 	width: 70%;
 }
 
-.jumbotron{
+.jumbotron {
 	padding-top:20px;
 	padding-bottom:20px;
+}
+
+.square {
+	display: block;
+	width: 40px;
+	height: 40px;
+	background-color: rgba(255, 228, 181, .7);
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.note-text {
+	display: inline-block;
+	font-style: italic;
+	margin: 10px 0px 0px 50px;
+	width: 400px;
 }
