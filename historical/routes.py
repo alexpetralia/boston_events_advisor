@@ -48,7 +48,8 @@ def post_homework():
 						modification_date = DATE('now')
 					WHERE title = (
 						SELECT title FROM events WHERE event_id = ?
-					);
+					)
+					AND modification_date <= DATE('now');
 				""", [liked, event_id])
 			return redirect(url_for('get_template_homework'))
 		else:
