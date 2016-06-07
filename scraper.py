@@ -183,7 +183,7 @@ class DetailPageScraper(ScraperConfig):
 @celery.task
 def main():
     
-    tags = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University']
+    tags = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University', 'Date Idea']
     scraper = EventsScraper(daysOut = 7)
     scraper.scrapeEvents(tags)
 
