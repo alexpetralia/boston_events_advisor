@@ -11,7 +11,7 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 3. Activate the virtual environment: `source .venv/bin/activate`
 4. Install the required packages: `pip install -r requirements.txt`
 5. Start the redis server: `sudo redis-server`
-6. Start the celerybeat and uWSGI processes in tmux sessions: `tmux new -s <celery/flask>`, `tmux attach -t <celery/flask>`
+6. Start the celerybeat and uWSGI processes in tmux sessions: `tmux new -s <session>`, `tmux attach -t <target>`
 7. Start the celerybeat worker: `celery -A celeryd worker -l info -B`
 8. Start the uWSGI server to run Flask: `uwsgi --socket 0.0.0.0:8001 --protocol=http --module app --callable app`
 
