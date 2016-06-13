@@ -24,6 +24,19 @@ from bs4 import BeautifulSoup
 from datetime import datetime as dt, timedelta as td
 from overhead.functions import sendEmail, scraperLogger
 from celeryd import celery
+
+def http_request(link, *args, **kwargs):
+
+    while True:
+        try: 
+            response = requests.get(link, *args, **kwargs)
+        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout):
+            scraperLogger.debug("Request timed out after %s seconds. Retrying in 30 seconds..." % kwargs['timeout'])
+            time.sleep(30)
+            continue
+        break
+
+    return response
              
 class ScraperConfig(object):
     
@@ -31,7 +44,7 @@ class ScraperConfig(object):
         
         self.rootURL = 'http://www.thebostoncalendar.com'
         self.database = 'events.db'
-        self.timeOut = 1
+        self.timeOut = 2.5
         
 class EventsScraper(ScraperConfig):
     
@@ -68,7 +81,8 @@ class ResultsPageScraper(ScraperConfig):
             'day': self.date.day, 
             'tags[]': self.tags
         }
-        response =  requests.get(self.rootURL + '/events', params=payload, timeout=self.timeOut)
+        # response =  requests.get(self.rootURL + '/events', params=payload, timeout=self.timeOut)
+        response =  http_request(self.rootURL + '/events', params=payload, timeout=self.timeOut)
         return response.text
         
     def parseResults(self):
@@ -138,15 +152,7 @@ class DetailPageScraper(ScraperConfig):
 
     def getSoup(self):
 
-        while True:
-            try: 
-                response = requests.get(self.link, timeout=self.timeOut)
-            except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout):
-                scraperLogger.debug("Request timed out after %s seconds. Retrying in 30 seconds..." % self.timeOut)
-                time.sleep(30)
-                continue
-            break
-
+        response = http_request(self.link, timeout=self.timeOut)
         self.soup = BeautifulSoup(response.text, 'lxml')
     
     def getTitle(self):
