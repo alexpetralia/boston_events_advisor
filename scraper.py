@@ -61,7 +61,7 @@ class EventsScraper(ScraperConfig):
             resultsScraper = ResultsPageScraper(self.today + td(i), tags)
             self.events[str(self.today)] = resultsScraper.scrapeLinks()
 
-        sendEmail('Next week\'s events in Boston are ready for you.', 'Head to <a href="localhost:5000">the website</a> to check it out.')
+        sendEmail('Next week\'s events in Boston are ready for you.', 'Head to over to 52.2.13.97:8001 to check it out.')
             
 class ResultsPageScraper(ScraperConfig):
     

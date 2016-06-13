@@ -35,5 +35,5 @@ scraperLogger = init_logger()
 from overhead.gmail import GmailSender
 
 def sendEmail(subject, body):
-    Sender = GmailSender(os.path.join(os.path.dirname(__file__), 'overhead', 'client_secret.json'))
+    Sender = GmailSender(os.path.join(os.path.dirname(__file__), 'client_secret.json'))
     Sender.sendMessage('alex.petralia@gmail.com', subject, body)
