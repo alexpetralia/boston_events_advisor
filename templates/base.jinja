@@ -8,7 +8,7 @@
                     <h4>{{ event.title }}</h4>
                     {% if show_dates %} <p style='font-size: .75em'><i>{{ event.creation_date }}</i></p> {% endif %}
                     <div style="padding: 0em .5em 0em .5em; {% if event.suggested == 1 %}background-color: rgba(255, 228, 181, .7){% endif %}"><p>{{ event.description[0:150] }}{% if event.description[151] %}...{% endif %}</p></div>
-                    <button class='btn btn-secondary' style='cursor:default'>{{ event.cost }}</button>
+                    <button class='btn btn-secondary' style='cursor:default' disabled>{{ event.cost[0:15] }}</button>
                     <a href="{{ event.link }}" class='btn btn-info' target="_blank">more</a>
                     <div class='pull-right'>
                         <label class='glyphicon glyphicon-thumbs-up btn {% if event.liked == 1 %}btn-primary{% endif %}'>

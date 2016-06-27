@@ -4,7 +4,7 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 
 **You can now view this project live <a href="http://52.2.13.97:8001/" target="_blank">here</a>.**
 
-### Installation and Run Instructions
+### Installation and run instructions
 
 1. Clone the repo: `git clone github.com/alexpetralia/boston_events_advisor`
 2. Create a virtual environment: `python3 -m venv .venv`
@@ -17,6 +17,7 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 9. If using Unix sockets and not HTTP, link your system nginx folder to the repo's nginx.conf: `sudo ln -s overhead/nginx_boston_events.conf /etc/nginx/sites-enabled` 
 10. Start/restart nginx: `sudo service nginx start/reload`
 
-### To Do
+### To do
 
+* fix Gmail sender
 * incorporate distance from Home as a feature (lat, long) + include all listed Categories in the feature list [http://stackoverflow.com/questions/15257674/scikit-learn-add-features-to-a-vectorized-set-of-documents] + confidence in our predictions: 80% + use cross-validation as fitting method

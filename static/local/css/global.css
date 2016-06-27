@@ -26,3 +26,7 @@ body {
 	margin: 10px 0px 0px 50px;
 	width: 400px;
 }
+
+.btn[disabled] {
+    opacity: 1;
+}

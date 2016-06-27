@@ -42,7 +42,7 @@ def get_recommendations():
 	data = []
 	if recommended_events:
 		results = sql_execute("""
-			SELECT *, 1 FROM events
+			SELECT * FROM events
 			WHERE event_id IN (%s)
 		""" % (', '.join('?' for i in recommended_events) ), recommended_events)
 		columns = ['id', 'title', 'cost', 'description', 'link', 'liked', 'creation_date', 'modification_date', 'suggested']
@@ -69,7 +69,13 @@ def get_template_main():
 	elif len(context) <= num_events:
 		unseen_events = json.loads(get_new_events())
 		random.shuffle(unseen_events)
-		context += unseen_events[0:(num_events - len(context))]
+		recommended_titles = (x['title'] for x in context)
+		c = 0
+		while len(context) < num_events:
+			if unseen_events[c]['title'] not in recommended_titles:
+				context += [unseen_events[c]]
+			c += 1
+
 	random.shuffle(context)
 
 	return render_template('main.jinja', events=context)
