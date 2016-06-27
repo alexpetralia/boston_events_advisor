@@ -19,5 +19,4 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 
 ### To do
 
-* fix Gmail sender
 * incorporate distance from Home as a feature (lat, long) + include all listed Categories in the feature list [http://stackoverflow.com/questions/15257674/scikit-learn-add-features-to-a-vectorized-set-of-documents] + confidence in our predictions: 80% + use cross-validation as fitting method
