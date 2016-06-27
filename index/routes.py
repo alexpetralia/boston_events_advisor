@@ -42,7 +42,8 @@ def get_recommendations():
 	data = []
 	if recommended_events:
 		results = sql_execute("""
-			SELECT *, 1 FROM events
+			SELECT *, 1
+			FROM events
 			WHERE event_id IN (%s)
 		""" % (', '.join('?' for i in recommended_events) ), recommended_events)
 		columns = ['id', 'title', 'cost', 'description', 'link', 'liked', 'creation_date', 'modification_date', 'suggested']

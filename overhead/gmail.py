@@ -43,5 +43,5 @@ class GmailSender():
 
 if __name__ == '__main__':
     
-    Sender = GmailSender('client_secret.json')
+    Sender = GmailSender(os.path.join('overhead', 'client_secret.json'))
     Sender.sendMessage('alex.petralia@gmail.com', 'Test subject', 'Test body')
