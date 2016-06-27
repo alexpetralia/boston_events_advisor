@@ -70,7 +70,7 @@ def get_template_main():
 	elif len(context) <= num_events:
 		unseen_events = json.loads(get_new_events())
 		random.shuffle(unseen_events)
-		recommended_titles = (x['title'] for x in context)
+		recommended_titles = [x['title'] for x in context]
 		c = 0
 		while len(context) < num_events:
 			if unseen_events[c]['title'] not in recommended_titles:

@@ -1,5 +1,21 @@
 body {
-  padding: 20px 0px 20px 0px;
+	padding: 20px 0px 20px 0px;
+}
+
+h1 {
+	font-size: 28px;
+}
+
+h3 {
+	font-size: 18px;
+}
+
+h4 {
+	font-size: 15px;
+}
+
+p, span, a {
+	font-size: 12px;
 }
 
 .container {
@@ -7,8 +23,10 @@ body {
 }
 
 .jumbotron {
-	padding-top:20px;
-	padding-bottom:20px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	margin-top: -15px;
+	margin-bottom: 15px;
 }
 
 .square {
