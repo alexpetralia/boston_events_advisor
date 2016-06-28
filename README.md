@@ -19,4 +19,6 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 
 ### To do
 
-* incorporate distance from Home as a feature (lat, long) + include all listed Categories in the feature list [http://stackoverflow.com/questions/15257674/scikit-learn-add-features-to-a-vectorized-set-of-documents] + confidence in our predictions: 80% + use cross-validation as fitting method
+* concat new features to feature matrix
+* use Cross-validation
+* include cross-val as Confidence %

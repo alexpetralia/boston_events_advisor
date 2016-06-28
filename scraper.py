@@ -81,7 +81,6 @@ class ResultsPageScraper(ScraperConfig):
             'day': self.date.day, 
             'tags[]': self.tags
         }
-        # response =  requests.get(self.rootURL + '/events', params=payload, timeout=self.timeOut)
         response =  http_request(self.rootURL + '/events', params=payload, timeout=self.timeOut)
         return response.text
         
@@ -111,6 +110,9 @@ class ResultsPageScraper(ScraperConfig):
                 cost TEXT NOT NULL,
                 description TEXT NOT NULL,
                 link TEXT NOT NULL,
+                latitude NUMERIC NOT NULL,
+                longitude NUMERIC NOT NULL,
+                categories TEXT NOT NULL,
                 liked INTEGER NOT NULL DEFAULT 0,
                 creation_date DATE NOT NULL,
                 modification_date DATE NOT NULL,
@@ -120,14 +122,14 @@ class ResultsPageScraper(ScraperConfig):
         
         for r in self.data:
             c.execute("""
-                INSERT INTO events (title, cost, description, link, liked, creation_date, modification_date)
-                SELECT ?, ?, ?, ?, 0, ?, ?
+                INSERT INTO events (title, cost, description, link, latitude, longitude, categories, liked, creation_date, modification_date)
+                SELECT ?, ?, ?, ?, ?, ?, ?, 0, ?, ?
                 WHERE NOT EXISTS (
                     SELECT 1 FROM events
                     WHERE title = ? AND creation_date = ?
                 );
-            """, [r['title'], r['cost'], r['description'], r['link'], self.date, self.date,
-                  r['title'], self.date])
+            """, [r['title'], r['cost'], r['description'], r['link'], r['latitude'], r['longitude'], r['categories'],
+                  self.date, self.date, r['title'], self.date])
         cnxn.commit()
             
     def scrapeLinks(self):
@@ -172,6 +174,17 @@ class DetailPageScraper(ScraperConfig):
         descDiv = self.soup.find(id='event_description').get_text()
         description = descDiv.replace('\n', '').replace('\t', '').replace('\r', '').strip()   
         self.description = description
+
+    def getCategories(self):
+
+        categoriesDiv = [x for x in self.soup.find_all('p') if 'Categories:' in x.get_text()][0]
+        categories = categoriesDiv.get_text().replace('\n', '').replace('\t', '').split(':')[-1]
+        self.categories = categories
+
+    def getCoordinates(self):
+
+        DOMelem = self.soup.find('script', {'charset': 'utf-8'}).get_text()
+        self.lng, self.lat = re.search(r'"lng": "(-[\d]+.[\d]+)", "lat": "([\d]+.[\d]+)"', DOMelem).groups()
     
     def getData(self):
         
@@ -179,11 +192,16 @@ class DetailPageScraper(ScraperConfig):
         self.getTitle()
         self.getCost()
         self.getDescription()
+        self.getCategories()
+        self.getCoordinates()
         
         return { 'title': self.title, 
                  'cost': self.cost, 
                  'description': self.description,
-                 'link': self.link
+                 'link': self.link,
+                 'latitude': float(self.lat),
+                 'longitude': float(self.lng),
+                 'categories': self.categories,
                 }
 
 @celery.task
@@ -195,4 +213,4 @@ def main():
 
 if __name__ == '__main__':
     
-    main.delay()
+    main()

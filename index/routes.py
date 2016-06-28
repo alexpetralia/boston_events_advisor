@@ -63,7 +63,7 @@ def get_recommendations():
 def get_template_main():
 	context = json.loads(get_recommendations())
 
-	num_events = 12
+	num_events = 24
 	if len(context) > num_events:
 		random.shuffle(context)
 		context = context[0:num_events]
