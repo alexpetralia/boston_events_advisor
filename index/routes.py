@@ -1,4 +1,4 @@
-from app import app
+from app import app, cache
 from flask import render_template, request, redirect, url_for
 from datetime import datetime as dt, timedelta as td
 from overhead.functions import sql_execute
@@ -31,9 +31,9 @@ def get_new_events():
 	return json.dumps(data)
 
 @app.route("/get_recommendations")
+@cache.cached(timeout=3600)
 def get_recommendations():
-	
-	predictions = predict()
+	predictions, score = predict()
 	recommended_events = []
 	for event_id, __, liked in predictions:
 		if int(liked) == 1:
@@ -46,12 +46,14 @@ def get_recommendations():
 			FROM events
 			WHERE event_id IN (%s)
 		""" % (', '.join('?' for i in recommended_events) ), recommended_events)
-		columns = ['id', 'title', 'cost', 'description', 'link', 'liked', 'creation_date', 'modification_date', 'suggested']
+		columns = ['id', 'title', 'cost', 'description', 'link', 'liked', 'creation_date', 'modification_date', 'latitude', 'longitude', 'categories', 'suggested']
 		for result in results:
 			t = {}
 			for i, column in enumerate(columns):
 				t[column] = result[i]
 			data.append(t)
+
+	data.append(score)
 	return json.dumps(data)
 
 
@@ -62,6 +64,7 @@ def get_recommendations():
 @app.route("/")
 def get_template_main():
 	context = json.loads(get_recommendations())
+	score = "%0.2f" % (context.pop() * 100)
 
 	num_events = 24
 	if len(context) > num_events:
@@ -79,11 +82,10 @@ def get_template_main():
 
 	random.shuffle(context)
 
-	return render_template('main.jinja', events=context)
+	return render_template('main.jinja', events=context, score=score)
 
 @app.route("/post_upcoming", methods=['GET', 'POST'])
 def post_upcoming():
-
 	if request.method == 'POST':
 		if request.form.get('pin') == os.environ.get('PIN'):
 			results = request.values
@@ -111,10 +113,8 @@ def post_upcoming():
 
 @app.route("/about")
 def get_template_about():
-
     return render_template('about.jinja')
 
 @app.route("/403")
 def get_template_403():
-
     return render_template('403.jinja')
