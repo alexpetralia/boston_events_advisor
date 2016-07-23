@@ -208,7 +208,7 @@ class DetailPageScraper(ScraperConfig):
 def main():
     
     tags = ['Business', 'Innovation', 'Lectures & Conferences', 'Tech', 'University', 'Date Idea']
-    scraper = EventsScraper(daysOut = 7)
+    scraper = EventsScraper(daysOut = 8)
     scraper.scrapeEvents(tags)
 
 if __name__ == '__main__':

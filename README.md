@@ -16,3 +16,7 @@ Every Sunday, I look for upcoming events in Boston I'd like to attend using [www
 8. Start the uWSGI server to run Flask: `uwsgi --socket 0.0.0.0:8001 --protocol=http --module app --callable app` or `uwsgi --socket /tmp/uwsgi_boston_events.sock --module app --callable app --processes 4 --threads 2`
 9. If using Unix sockets and not HTTP, link your system nginx folder to the repo's nginx.conf: `sudo ln -s overhead/nginx_boston_events.conf /etc/nginx/sites-enabled` 
 10. Start/restart nginx: `sudo service nginx start/reload`
+
+### To do
+
+* reduce feature space (suffering from curse of dimensionality)
